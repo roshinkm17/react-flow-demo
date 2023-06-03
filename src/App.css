@@ -26,18 +26,22 @@
 .sidebar {
   height: 100%;
   width: 100%;
-  border: 3px solid black;
+  border-left: 1px solid lightgray;
   padding: 1rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
-.text-node {
-  padding: 1rem;
-  background-color: lightskyblue;
+.sidebar-footer {
   display: flex;
-  place-items: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-footer > .save-btn {
+  padding-block: 0.5rem;
+  width: 70%;
 }
 
 .drag {
@@ -48,10 +52,6 @@
   cursor: grabbing;
 }
 
-.sidebar-footer button {
-  padding: 1rem;
-  background-color: greenyellow;
-  border: none;
-  cursor: pointer;
-  width: 100%;
+.node-card {
+  border: 1px solid lightgray;
 }

@@ -1,19 +1,20 @@
-import { Handle, Position } from "reactflow"
+import { Handle, Position } from "reactflow";
+import { Card, CardHeader, CardContent, TextField } from "@material-ui/core";
+import { MessageRounded } from "@material-ui/icons";
 
 export default function TextNode({ data }) {
-    return (
-        <div className="text-node drag">
+  return (
+    <div className="text-node drag">
+      <Handle type="source" position={Position.Left} style={{ height: "10px", width: "10px" }} />
 
-            <Handle type="source" position={Position.Left} />
+      <Card>
+        <CardHeader style={{ backgroundColor: "lightblue" }} title="Message" avatar={<MessageRounded />} />
+        <CardContent>
+          <TextField fullWidth multiline variant="outlined" onChange={(e) => (data.text = e.target.value)} placeholder="Type your message here" />
+        </CardContent>
+      </Card>
 
-            <div>
-                <p className="node-description">Message</p>
-                <hr />
-                <input type="text" name="text" />
-            </div>
-
-            <Handle type="target" position={Position.Right} />
-
-        </div>
-    )
+      <Handle type="target" position={Position.Right} style={{ height: "10px", width: "10px" }} />
+    </div>
+  );
 }

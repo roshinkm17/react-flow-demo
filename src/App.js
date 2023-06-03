@@ -1,15 +1,14 @@
 import React from 'react';
 import Canvas from 'components/Canvas';
 import Sidebar from 'components/Sidebar';
+import CustomHeader from 'components/Header';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
 
-      <header style={{ height: "10vh", border: "1px solid black" }}>
-        <h1>Header</h1>
-      </header>
+      <CustomHeader />
 
       <div style={{ display: "flex" }}>
 

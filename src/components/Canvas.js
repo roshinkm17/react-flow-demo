@@ -92,7 +92,7 @@ export default function Canvas() {
                         onEdgeUpdate={onEdgeUpdate}
                         onEdgeUpdateStart={onEdgeUpdateStart}
                         onEdgeUpdateEnd={onEdgeUpdateEnd}
-                        fitView
+                    // fitView
                     >
 
                         <Background color="#aaa" gap={16} size={1} />

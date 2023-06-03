@@ -1,4 +1,5 @@
 import TextNodePreview from "./Previews/TextNodePreview"
+import { Button } from "@material-ui/core"
 
 export default function Sidebar() {
 
@@ -14,7 +15,7 @@ export default function Sidebar() {
 
             <div className="sidebar-footer">
 
-                <button>Save changes</button>
+                <Button variant="contained" color="primary" className="save-btn" disableElevation fullWidth >Save Changes</Button>
 
             </div>
 
