@@ -55,3 +55,14 @@
 .node-card {
   border: 1px solid lightgray;
 }
+
+.text-node:active,
+.active {
+  outline: 3px solid lightblue !important;
+  border-radius: 5px;
+  outline-offset: 3px;
+}
+
+.node-settings h4 {
+  margin-bottom: 1rem;
+}
