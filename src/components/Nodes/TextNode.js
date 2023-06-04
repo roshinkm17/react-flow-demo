@@ -40,15 +40,7 @@ export default function TextNode({ data }) {
           avatar={<MessageRounded />}
         />
         <CardContent>
-          <TextField
-            fullWidth
-            multiline
-            variant="outlined"
-            value={data.label}
-            onChange={(e) => (data.text = e.target.value)}
-            disabled
-            placeholder="Type your message here"
-          />
+          <p>{data?.message}</p>
         </CardContent>
       </Card>
 

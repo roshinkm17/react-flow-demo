@@ -8,15 +8,22 @@ export const SelectedNodeContext = React.createContext();
 
 function App() {
   const [selectedNode, setSelectedNode] = React.useState(null);
-  const [saveData, setSaveData] = React.useState(null);
+  const [messageToUpdate, setMessageToUpdate] = React.useState("");
+  const [saveFlow, setSaveFlow] = React.useState(false);
 
   return (
     <div className="App">
-      <CustomHeader />
-
       <SelectedNodeContext.Provider
-        value={{ selectedNode, setSelectedNode, saveData, setSaveData }}
+        value={{
+          selectedNode,
+          setSelectedNode,
+          messageToUpdate,
+          setMessageToUpdate,
+          saveFlow,
+          setSaveFlow,
+        }}
       >
+        <CustomHeader />
         <div style={{ display: "flex" }}>
           {/* Flow section */}
           <div className="canvas-wrapper">

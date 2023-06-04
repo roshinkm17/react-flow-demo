@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, useMemo, useEffect } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import ReactFlow, {
   Background,
   Controls,
@@ -11,6 +11,10 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 import { nodeTypes } from "nodeTypes";
 import { useSelectedNode } from "./ContextProvider";
+import { Snackbar } from "@material-ui/core";
+import CustomAlert from "./Alert";
+import DebugInfo from "./Debug";
+import { debug } from "../constants";
 
 export default function Canvas() {
   let id = 0;
@@ -19,10 +23,21 @@ export default function Canvas() {
   const reactFlowWrapperRef = useRef(null);
   const edgeUpdateSuccessful = useRef(true);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const [snackBarState, setSnackBarState] = useState({
+    open: false,
+    message: "",
+    type: "success",
+  });
 
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const { selectedNode, setSelectedNode, saveData } = useSelectedNode();
+  const {
+    selectedNode,
+    setSelectedNode,
+    messageToUpdate,
+    saveFlow,
+    setSaveFlow,
+  } = useSelectedNode();
 
   const onDragOver = useCallback((event) => {
     event.preventDefault();
@@ -47,7 +62,7 @@ export default function Canvas() {
         id: getId(),
         type,
         position,
-        data: { label: `${type} node` },
+        data: { label: `${type} node`, message: "" },
       };
 
       setNodes((nodes) => [...nodes, newNode]);
@@ -84,35 +99,71 @@ export default function Canvas() {
       return;
     }
     const selectedNodeId = selectedNode.id;
-    console.log(selectedNodeId);
 
     // Add a class to the selected node has data-id="selectedNodeId"
     const selectedNodeElement = document.querySelector(
       `[data-id="${selectedNodeId}"]`
     );
-    console.log("Selected node element: ", selectedNodeElement);
     selectedNodeElement.classList.add("active");
+
     setSelectedNode(selectedNode);
   }, []);
 
   useEffect(() => {
-    // Update the node label when the saveData changes
-    if (selectedNode) {
-      setNodes((nodes) =>
-        nodes.map((node) => {
-          if (node.id === selectedNode.id) {
-            node.data.label = saveData;
-          }
-          return node;
-        })
+    console.log("messageToUpdate", messageToUpdate);
+    setNodes((nodes) =>
+      nodes.map((node) => {
+        if (node.id === selectedNode?.id) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              message: messageToUpdate,
+            },
+          };
+        }
+        return node;
+      })
+    );
+  }, [messageToUpdate]);
+
+  useEffect(() => {
+    if (!saveFlow) return;
+
+    /* 
+    Get all the edges and nodes from the canvas.
+    Check if any node has an empty target handle.
+    If yes, then show an error message.
+  */
+
+    const nodesWithEmptyTargetHandle = nodes.filter((node) => {
+      const nodeEdges = edges.filter(
+        (edge) => edge.target === node.id || edge.source === node.id
       );
+      return nodeEdges.length === 0;
+    });
+
+    if (nodesWithEmptyTargetHandle.length > 0) {
+      setSnackBarState({
+        open: true,
+        message: "Please connect all the nodes",
+        type: "error",
+      });
+    } else {
+      setSnackBarState({
+        open: true,
+        message: "Flow saved successfully",
+        type: "success",
+      });
     }
-    console.log("Updated nodes");
-    console.log("Save data: ", saveData);
-  }, [saveData]);
+
+    setSaveFlow(false);
+  }, [saveFlow]);
 
   return (
     <div className="canvas">
+      {/* Disable in production environment */}
+      <DebugInfo selectedNode={selectedNode} debug={debug} />
       <ReactFlowProvider>
         <div ref={reactFlowWrapperRef} className="react-flow-provider-wrapper">
           <ReactFlow
@@ -136,6 +187,14 @@ export default function Canvas() {
           </ReactFlow>
         </div>
       </ReactFlowProvider>
+      <Snackbar
+        open={snackBarState.open}
+        autoHideDuration={2000}
+        onClose={() => setSnackBarState({ ...snackBarState, open: false })}
+        message={snackBarState.message}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+        children={<CustomAlert alert={snackBarState} />}
+      />
     </div>
   );
 }
