@@ -12,6 +12,7 @@ export default function NodePreviews({ nodeType }) {
       nodeTypeName="textNode"
       icon={<MessageRounded />}
       title={"Message"}
+      key={"1"}
     />,
   ];
   return <div>{nodeList}</div>;

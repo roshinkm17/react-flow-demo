@@ -11,10 +11,11 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 import { nodeTypes } from "nodeTypes";
 import { useSelectedNode } from "./ContextProvider";
-import { Snackbar } from "@material-ui/core";
+import { Modal, Snackbar, Button } from "@material-ui/core";
 import CustomAlert from "./Alert";
 import DebugInfo from "./Debug";
-import { debug } from "../constants";
+import { debug, flowKey } from "../constants";
+import { Restore, NewReleasesRounded, Add } from "@material-ui/icons";
 
 export default function Canvas() {
   /* Generates node ids(node_1) on dropping into canvas */
@@ -24,6 +25,7 @@ export default function Canvas() {
   const reactFlowWrapperRef = useRef(null);
   const edgeUpdateSuccessful = useRef(true);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
 
   /* 
     Keeps state for message to be shown on the bottom snackbar
@@ -169,10 +171,34 @@ export default function Canvas() {
         message: "Flow saved successfully",
         type: "success",
       });
+
+      /* Save the state to localStorage */
+      const flow = reactFlowInstance.toObject();
+      localStorage.setItem(flowKey, JSON.stringify(flow));
     }
 
     setSaveFlow(false);
   }, [saveFlow]);
+
+  const onRestore = useCallback(() => {
+    const restoreFlow = async () => {
+      const flow = JSON.parse(localStorage.getItem(flowKey));
+
+      if (flow) {
+        const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+        setNodes(flow.nodes || []);
+        setEdges(flow.edges || []);
+      }
+    };
+
+    restoreFlow();
+  }, [setNodes]);
+
+  useEffect(() => {
+    /*  Check if there is a saved flow in localStorage */
+    const flow = JSON.parse(localStorage.getItem(flowKey));
+    if (flow) setOpenModal(true);
+  }, []);
 
   return (
     <div className="canvas">
@@ -210,6 +236,41 @@ export default function Canvas() {
         anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
         children={<CustomAlert alert={snackBarState} />}
       />
+
+      {/* Modal to show  */}
+      <Snackbar
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+      >
+        <div className="restore-modal">
+          <p>
+            We have a detected a saved session. Would you like to restore
+            previously saved session?
+          </p>
+          <div className="restore-modal-actions">
+            <Button
+              startIcon={<Restore />}
+              variant="outlined"
+              onClick={() => {
+                onRestore();
+                setOpenModal(false);
+              }}
+            >
+              Restore
+            </Button>
+            <Button
+              startIcon={<Add />}
+              variant="contained"
+              disableElevation
+              color="primary"
+              onClick={() => setOpenModal(false)}
+            >
+              New Flow
+            </Button>
+          </div>
+        </div>
+      </Snackbar>
     </div>
   );
 }

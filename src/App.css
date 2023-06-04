@@ -86,3 +86,16 @@
   color: lightgray;
   font-size: smaller;
 }
+
+.restore-modal-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.restore-modal {
+  background-color: white;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  padding: 1rem;
+}

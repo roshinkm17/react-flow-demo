@@ -12,7 +12,7 @@ export default function CustomHeader() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" color="default" elevation={0}>
+      <AppBar position="static" elevation={0}>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Chat 🤖 Flow Builder
