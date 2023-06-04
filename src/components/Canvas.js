@@ -17,12 +17,18 @@ import DebugInfo from "./Debug";
 import { debug } from "../constants";
 
 export default function Canvas() {
+  /* Generates node ids(node_1) on dropping into canvas */
   let id = 0;
   const getId = () => `node_${id++}`;
 
   const reactFlowWrapperRef = useRef(null);
   const edgeUpdateSuccessful = useRef(true);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+
+  /* 
+    Keeps state for message to be shown on the bottom snackbar
+    More options can be added like duration, position, styles etc.
+   */
   const [snackBarState, setSnackBarState] = useState({
     open: false,
     message: "",
@@ -31,13 +37,17 @@ export default function Canvas() {
 
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const {
-    selectedNode,
-    setSelectedNode,
-    messageToUpdate,
-    saveFlow,
-    setSaveFlow,
-  } = useSelectedNode();
+  const { selectedNode, setSelectedNode, dataToUpdate, saveFlow, setSaveFlow } =
+    useSelectedNode();
+
+  /* 
+    Canvas interaction functions.
+    onDragOver: Prevents default browser behavior of opening the dragged element
+    onDrop: Adds the dropped element to the canvas
+    onConnect: Handles node connection
+    edgeUpdatingFunctionsL: Handles edge removal.
+    onSelectionChange: Handles node selection
+  */
 
   const onDragOver = useCallback((event) => {
     event.preventDefault();
@@ -100,7 +110,10 @@ export default function Canvas() {
     }
     const selectedNodeId = selectedNode.id;
 
-    // Add a class to the selected node has data-id="selectedNodeId"
+    /* 
+      Add a class to the selected node has data-id="selectedNodeId"
+      This is used to highlight the selected node
+    */
     const selectedNodeElement = document.querySelector(
       `[data-id="${selectedNodeId}"]`
     );
@@ -109,8 +122,11 @@ export default function Canvas() {
     setSelectedNode(selectedNode);
   }, []);
 
+  /* 
+    Called when a node is updated from the settings panel.
+    Updates the selected node with the updated message.
+  */
   useEffect(() => {
-    console.log("messageToUpdate", messageToUpdate);
     setNodes((nodes) =>
       nodes.map((node) => {
         if (node.id === selectedNode?.id) {
@@ -118,23 +134,21 @@ export default function Canvas() {
             ...node,
             data: {
               ...node.data,
-              message: messageToUpdate,
+              ...dataToUpdate,
             },
           };
         }
         return node;
       })
     );
-  }, [messageToUpdate]);
+  }, [dataToUpdate]);
 
+  /* 
+    Check if any node is not connected to any other node.
+    If yes, show an error message.
+  */
   useEffect(() => {
     if (!saveFlow) return;
-
-    /* 
-    Get all the edges and nodes from the canvas.
-    Check if any node has an empty target handle.
-    If yes, then show an error message.
-  */
 
     const nodesWithEmptyTargetHandle = nodes.filter((node) => {
       const nodeEdges = edges.filter(
@@ -162,8 +176,9 @@ export default function Canvas() {
 
   return (
     <div className="canvas">
-      {/* Disable in production environment */}
+      {/* Disabled in production environment */}
       <DebugInfo selectedNode={selectedNode} debug={debug} />
+
       <ReactFlowProvider>
         <div ref={reactFlowWrapperRef} className="react-flow-provider-wrapper">
           <ReactFlow
@@ -180,9 +195,9 @@ export default function Canvas() {
             onEdgeUpdateStart={onEdgeUpdateStart}
             onEdgeUpdateEnd={onEdgeUpdateEnd}
             onSelectionChange={onSelectionChange}
-            // fitView
+            fitView
           >
-            <Background color="#aaa" gap={16} size={1} />
+            <Background />
             <Controls />
           </ReactFlow>
         </div>
@@ -192,7 +207,7 @@ export default function Canvas() {
         autoHideDuration={2000}
         onClose={() => setSnackBarState({ ...snackBarState, open: false })}
         message={snackBarState.message}
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+        anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
         children={<CustomAlert alert={snackBarState} />}
       />
     </div>

@@ -1,28 +1,17 @@
-import { TextField } from "@material-ui/core";
-import { useSelectedNode } from "./ContextProvider";
-import React, { useEffect } from "react";
+import TextNodeSettings from "./Settings/TextNodeSettings";
 
-export default function NodeSettings({ setData }) {
-  const { selectedNode } = useSelectedNode();
-  const [defaultData, setDefaultData] = React.useState("");
+export default function NodeSettings({ nodeType, setData }) {
+  /* 
+    Create custom node type to settings mapping.
+    Shows the settings panel based on the selected node type.
+  */
 
-  useEffect(() => {
-    setDefaultData(selectedNode.data.message);
-  }, [selectedNode]);
+  /* IMPORTANT */
+  /* PASS setData as a prop to every settings */
 
-  return (
-    <div className="node-settings">
-      <h4>Message</h4>
-      <TextField
-        fullWidth
-        multiline
-        defaultValue={defaultData}
-        variant="outlined"
-        placeholder="Type your message here"
-        onChange={(e) => {
-          setData(e.target.value);
-        }}
-      />
-    </div>
-  );
+  if (nodeType == "textNode") return <TextNodeSettings setData={setData} />;
+
+  /* New node types to be added here */
+
+  return null;
 }

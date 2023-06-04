@@ -15,7 +15,7 @@ export default function CustomHeader() {
       <AppBar position="static" color="default" elevation={0}>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Flow Builder
+            Chat 🤖 Flow Builder
           </Typography>
           <Button
             color="inherit"

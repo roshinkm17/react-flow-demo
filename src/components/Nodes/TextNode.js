@@ -1,8 +1,7 @@
 import { Handle, Position, getConnectedEdges, useReactFlow } from "reactflow";
-import { Card, CardHeader, CardContent, TextField } from "@material-ui/core";
+import { Card, CardHeader, CardContent } from "@material-ui/core";
 import { MessageRounded } from "@material-ui/icons";
-import { useCallback, useEffect } from "react";
-import { useSelectedNode } from "components/ContextProvider";
+import { useCallback } from "react";
 
 export default function TextNode({ data }) {
   /* 
@@ -40,6 +39,7 @@ export default function TextNode({ data }) {
           avatar={<MessageRounded />}
         />
         <CardContent>
+          {/* NOTE: Make sure to set the same property on the associated node settings component */}
           <p>{data?.message}</p>
         </CardContent>
       </Card>

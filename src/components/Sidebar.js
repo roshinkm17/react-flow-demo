@@ -1,12 +1,13 @@
-import TextNodePreview from "./Previews/TextNodePreview";
+import TextNodePreview from "./CustomNodePreview";
 import { Button } from "@material-ui/core";
 import { useSelectedNode } from "./ContextProvider";
-import NodeSettings from "./NodeSettings";
+import TextNodeSettings from "./Settings/TextNodeSettings";
 import React from "react";
+import NodeSettings from "./NodeSettings";
+import NodePreviews from "./NodePreviews";
 
 export default function Sidebar() {
-  const { selectedNode, setSelectedNode, setMessageToUpdate } =
-    useSelectedNode();
+  const { selectedNode, setDataToUpdate } = useSelectedNode();
   const [saveData, setSaveData] = React.useState(false);
 
   return (
@@ -14,9 +15,9 @@ export default function Sidebar() {
       <div className="custom-nodes-wrapper">
         {/* All custom node preview components should be added inside this */}
         {selectedNode ? (
-          <NodeSettings setData={setSaveData} />
+          <NodeSettings nodeType={selectedNode.type} setData={setSaveData} />
         ) : (
-          <TextNodePreview />
+          <NodePreviews />
         )}
       </div>
 
@@ -29,7 +30,7 @@ export default function Sidebar() {
             disableElevation
             fullWidth
             onClick={() => {
-              setMessageToUpdate(saveData);
+              setDataToUpdate(saveData);
             }}
           >
             Save Changes

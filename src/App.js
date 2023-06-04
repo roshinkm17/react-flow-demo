@@ -7,8 +7,13 @@ import "./App.css";
 export const SelectedNodeContext = React.createContext();
 
 function App() {
+  /* Keeps the state of the currently selected node */
   const [selectedNode, setSelectedNode] = React.useState(null);
-  const [messageToUpdate, setMessageToUpdate] = React.useState("");
+
+  /* Keeps the state of the message to update */
+  const [dataToUpdate, setDataToUpdate] = React.useState("");
+
+  /* Keeps the state of the save flow button */
   const [saveFlow, setSaveFlow] = React.useState(false);
 
   return (
@@ -17,8 +22,8 @@ function App() {
         value={{
           selectedNode,
           setSelectedNode,
-          messageToUpdate,
-          setMessageToUpdate,
+          dataToUpdate,
+          setDataToUpdate,
           saveFlow,
           setSaveFlow,
         }}
